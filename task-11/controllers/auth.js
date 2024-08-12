@@ -8,7 +8,7 @@ const transporter = nodemailer.createTransport(
   sendgridTransport({
     auth: {
       api_key:
-        "***REMOVED***",
+      process.env.SG_KEY,
     },
   })
 );
@@ -85,7 +85,7 @@ exports.postSignup = (req, res, next) => {
           console.log("Email: ", email);
           return transporter.sendMail({
             to: email,
-            from: "music_bot2@hotmail.com",
+            from: process.env.SG_SENDER,
             subject: "Signup succeeded!",
             html: "<h1>You successfully signed up!</h1>",
           });

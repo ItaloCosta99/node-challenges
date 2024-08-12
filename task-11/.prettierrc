@@ -1,9 +1,0 @@
-{
-  "singleAttributePerLine": true,
-  "plugins": ["prettier-plugin-ejs"],
-  "overrides": [
-    {
-      "files": "*.ejs"
-    }
-  ]
-}

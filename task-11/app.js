@@ -1,7 +1,5 @@
-require("dotenv").config();
 const path = require("path");
 
-const bcrypt = require("bcryptjs");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -13,7 +11,8 @@ const flash = require("connect-flash");
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
-const MONGODB_URI = process.env.MONGO_URI;
+const MONGODB_URI =
+  "mongodb+srv://italocosta99:rVKB08sohN6Ew9Ai@sandbox.acasjbk.mongodb.net/shop?retryWrites=true&w=majority&appName=Sandbox";
 
 const app = express();
 const store = new MongoDBStore({
@@ -37,7 +36,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: store,
-  })
+  }),
 );
 app.use(csrfProtection);
 app.use(flash());
@@ -71,16 +70,14 @@ mongoose
   .then((result) => {
     User.findOne().then((user) => {
       if (!user) {
-        bcrypt.hash("teste", 12).then((hashPassword) => {
-          const user = new User({
-            email: "max@test.com",
-            password: hashPassword,
-            cart: {
-              items: [],
-            },
-          });
-          user.save();
+        const user = new User({
+          email: "max@test.com",
+          password: "test",
+          cart: {
+            items: [],
+          },
         });
+        user.save();
       }
     });
     app.listen(3000);

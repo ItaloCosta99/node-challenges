@@ -27,6 +27,7 @@ app.set("views", "views");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
+const bcrypt = require("bcryptjs/dist/bcrypt");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -36,7 +37,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: store,
-  }),
+  })
 );
 app.use(csrfProtection);
 app.use(flash());
@@ -70,14 +71,16 @@ mongoose
   .then((result) => {
     User.findOne().then((user) => {
       if (!user) {
-        const user = new User({
-          email: "max@test.com",
-          password: "test",
-          cart: {
-            items: [],
-          },
+        bcrypt.hash("teste", 12).then((hashedPassword) => {
+          const user = new User({
+            email: "max@test.com",
+            password: hashedPassword,
+            cart: {
+              items: [],
+            },
+          });
+          return user.save();
         });
-        user.save();
       }
     });
     app.listen(3000);

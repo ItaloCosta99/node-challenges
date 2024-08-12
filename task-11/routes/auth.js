@@ -13,12 +13,16 @@ router.get("/signup", authController.getSignup);
 router.post(
   "/login",
   [
-    body("email").isEmail().withMessage("Please enter a valid email."),
+    body("email")
+      .isEmail()
+      .withMessage("Please enter a valid email.")
+      .normalizeEmail(),
     body("password", "Email or password are incorrect.")
       .isLength({ min: 5 })
-      .isAlphanumeric(),
+      .isAlphanumeric()
+      .trim(),
   ],
-  authController.postLogin
+  authController.postLogin,
 );
 
 router.post(
@@ -32,21 +36,25 @@ router.post(
         if (user) {
           throw new Error("The account does not exist.");
         }
-      }),
+      })
+      .normalizeEmail(),
     body(
       "password",
-      "Please enter a password with only numbers and text and at least 5 characters."
+      "Please enter a password with only numbers and text and at least 5 characters.",
     )
       .isLength({ min: 5 })
-      .isAlphanumeric(),
-    body("confirmPassword").custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("Passwords have to match!");
-      }
-      return true;
-    }),
+      .isAlphanumeric()
+      .trim(),
+    body("confirmPassword")
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error("Passwords have to match!");
+        }
+        return true;
+      })
+      .trim(),
   ],
-  authController.postSignup
+  authController.postSignup,
 );
 
 router.post("/logout", authController.postLogout);

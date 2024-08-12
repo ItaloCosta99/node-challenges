@@ -1,6 +1,7 @@
-require('dotenv').config()
+require("dotenv").config();
 const path = require("path");
 
+const bcrypt = require("bcryptjs");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -70,14 +71,16 @@ mongoose
   .then((result) => {
     User.findOne().then((user) => {
       if (!user) {
-        const user = new User({
-          email: "max@test.com",
-          password: "test",
-          cart: {
-            items: [],
-          },
+        bcrypt.hash("teste", 12).then((hashPassword) => {
+          const user = new User({
+            email: "max@test.com",
+            password: hashPassword,
+            cart: {
+              items: [],
+            },
+          });
+          user.save();
         });
-        user.save();
       }
     });
     app.listen(3000);

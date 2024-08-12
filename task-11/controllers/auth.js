@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport(
     auth: {
       api_key: process.env.SG_KEY,
     },
-  })
+  }),
 );
 
 exports.getLogin = (req, res, next) => {
@@ -56,8 +56,6 @@ exports.postLogin = (req, res, next) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log(errors.array());
-    
     return res.status(422).render("auth/login", {
       path: "/login",
       pageTitle: "Login",
@@ -101,10 +99,9 @@ exports.postLogin = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  const errors = validationResult(req);
   const confirmPassword = req.body.confirmPassword;
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log(errors.array());
     return res.status(422).render("auth/signup", {
       path: "/signup",
       pageTitle: "Signup",
@@ -125,10 +122,10 @@ exports.postSignup = (req, res, next) => {
         password: hashPassword,
         cart: { items: [] },
       });
+      console.log("Created new user");
       return user.save();
     })
     .then((result) => {
-      console.log("Email: ", email);
       return transporter.sendMail({
         to: email,
         from: process.env.SG_SENDER,
